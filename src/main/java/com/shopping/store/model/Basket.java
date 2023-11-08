@@ -14,6 +14,9 @@ public class Basket {
         this.id = id;
     }
 
+    @OneToOne(mappedBy = "basket", fetch = FetchType.LAZY)
+    private User user;
+
     public List<BasketItem> getBasketItems() {
         return basketItems;
     }

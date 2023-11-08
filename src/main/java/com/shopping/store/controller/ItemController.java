@@ -2,15 +2,18 @@ package com.shopping.store.controller;
 
 import com.shopping.store.model.*;
 import com.shopping.store.repository.ItemRepository;
+import com.shopping.store.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Enumeration;
 import java.util.List;
 
 @Controller
@@ -19,10 +22,12 @@ public class ItemController {
     private final ItemRepository itemRepository;
     private final BasketService basketService;
 
+    private final UserRepository userRepository;
     @Autowired
-    public ItemController(ItemRepository itemRepository, BasketService basketService) {
+    public ItemController(ItemRepository itemRepository, BasketService basketService, UserRepository userRepository) {
         this.itemRepository = itemRepository;
         this.basketService = basketService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/items")
@@ -100,6 +105,7 @@ public class ItemController {
 
         return "redirect:/items";
     }
+
 
     @GetMapping("/basket")
     public String viewBasket(Model model, HttpServletRequest request) {
