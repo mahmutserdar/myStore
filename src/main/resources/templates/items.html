@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Items</title>
+</head>
+<body>
+
+<!-- Login/Logout Links -->
+<div th:if="${!#authorization.expression('isAuthenticated()')}">
+    <a href="/login">Login</a>
+</div>
+<div th:if="${#authorization.expression('isAuthenticated()')}">
+    <!-- Logout form -->
+    <form th:action="@{/logout}" method="post">
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+        <button type="submit" th:text="'Logout (' + ${#authentication.name} + ')'">Logout</button>
+    </form>
+</div>
+
+<h3>Basket</h3>
+<td><a href="/basket">Click to see your basket</a></td>
+<h2>Items</h2>
+<a href="/items/add">Add New Item</a>
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${items}">
+        <td th:text="${item.itemName}">Item Name</td>
+        <td th:text="${item.itemPrice}">Item Price</td>
+        <td th:text="${item.itemDesc}">Item Description</td>
+        <td>
+            <a th:href="@{/basket/add/{id}(id=${item.id})}">Add to Basket</a>
+            |
+            <a th:href="@{/items/edit/{id}(id=${item.id})}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">Update</a>
+            |
+            <form th:action="@{/items/delete/{id}(id=${item.id})}" method="post" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" style="display:inline;">
+                <input type="hidden" name="_method" value="delete" />
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
