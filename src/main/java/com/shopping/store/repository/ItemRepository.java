@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    @Query("SELECT i FROM Item i WHERE i.itemName LIKE %?1%")
+    @Query("SELECT i FROM Item i WHERE (i.itemName LIKE %?1% or i.itemDesc LIKE %?1%)")
     List<Item> searchByName(String query);
 }

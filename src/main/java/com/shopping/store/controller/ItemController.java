@@ -6,6 +6,7 @@ import com.shopping.store.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,11 @@ public class ItemController {
 
         if (userRepository.findByUsername("user") == null) {
             User currentUser = new User("user", "user");
+            userRepository.save(currentUser);
+        }
+
+        if (userRepository.findByUsername("admin") == null) {
+            User currentUser = new User("admin", "admin");
             userRepository.save(currentUser);
         }
 
@@ -96,9 +102,27 @@ public class ItemController {
         return "redirect:/items";
     }
 
+    @GetMapping("/basket")
+    public String viewBasket(Model model) {
+
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName();
+
+        User currentUser = userRepository.findByUsername(currentUserName);
+        Basket basket = currentUser.getBasket();
+        model.addAttribute("basket", basket);
+        return "basket";
+    }
+
+
     @GetMapping("/basket/add/{id}")
     public String addItemToBasket(@PathVariable Long id) {
-        User currentUser = userRepository.findByUsername("user");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName();
+
+        User currentUser = userRepository.findByUsername(currentUserName);
         Basket basket = currentUser.getBasket();
 
         itemRepository.findById(id).ifPresent(item -> {
@@ -109,25 +133,17 @@ public class ItemController {
     }
 
 
+
+
     @GetMapping("/items/search")
     public String searchItems(@RequestParam String query, Model model) {
-        // Perform the search logic using the query parameter
         List<Item> items = itemRepository.searchByName(query);
-        // Add the search results to the model
         model.addAttribute("items", items);
-        // Return the view name
         return "items";
     }
 
 
-    @GetMapping("/basket")
-    public String viewBasket(Model model) {
 
-        User currentUser = userRepository.findByUsername("user");
-        Basket basket = currentUser.getBasket();
-        model.addAttribute("basket", basket);
-        return "basket";
-    }
 
 
     @GetMapping("/test")

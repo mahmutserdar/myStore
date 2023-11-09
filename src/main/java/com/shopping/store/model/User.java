@@ -1,5 +1,7 @@
 package com.shopping.store.model;
 
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+
 import javax.persistence.*;
 
 @Entity
