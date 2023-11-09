@@ -109,6 +109,17 @@ public class ItemController {
     }
 
 
+    @GetMapping("/items/search")
+    public String searchItems(@RequestParam String query, Model model) {
+        // Perform the search logic using the query parameter
+        List<Item> items = itemRepository.searchByName(query);
+        // Add the search results to the model
+        model.addAttribute("items", items);
+        // Return the view name
+        return "items";
+    }
+
+
     @GetMapping("/basket")
     public String viewBasket(Model model) {
 
