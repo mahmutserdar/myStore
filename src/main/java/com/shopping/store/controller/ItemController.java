@@ -10,10 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -23,11 +19,18 @@ public class ItemController {
     private final BasketService basketService;
 
     private final UserRepository userRepository;
+
     @Autowired
     public ItemController(ItemRepository itemRepository, BasketService basketService, UserRepository userRepository) {
         this.itemRepository = itemRepository;
         this.basketService = basketService;
         this.userRepository = userRepository;
+
+        if (userRepository.findByUsername("user") == null) {
+            User currentUser = new User("user", "user");
+            userRepository.save(currentUser);
+        }
+
     }
 
     @GetMapping("/items")
@@ -57,7 +60,7 @@ public class ItemController {
     }
 
     @PostMapping("/items/update/{id}")
-    public String updateItem(@PathVariable Long id, @ModelAttribute Item item, RedirectAttributes redirectAttributes) {
+    public String updateItem(@PathVariable Long id, @ModelAttribute Item item) {
         itemRepository.findById(id).ifPresent(i -> {
             i.setItemName(item.getItemName());
             i.setItemPrice(item.getItemPrice());
@@ -82,41 +85,35 @@ public class ItemController {
     @PostMapping("/items")
     public String addItem(@ModelAttribute Item item) {
         itemRepository.save(item);
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            System.out.println(auth.getPrincipal() + "AUUUUUUUUUUT1");
+        } else {
+            System.out.println("AUUUUUUUUUUT2");
+        }
+
         return "redirect:/items";
     }
 
     @GetMapping("/basket/add/{id}")
-    public String addItemToBasket(@PathVariable Long id, HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Basket basket = (Basket) session.getAttribute("basket");
+    public String addItemToBasket(@PathVariable Long id) {
+        User currentUser = userRepository.findByUsername("user");
+        Basket basket = currentUser.getBasket();
 
-        if (basket == null) {
-            basket = new Basket(); // Create a new Basket if not present
-            session.setAttribute("basket", basket);
-        }
-
-        final Basket finalBasket = basket; // Final reference for the lambda to use
         itemRepository.findById(id).ifPresent(item -> {
-            basketService.addBasketItem(finalBasket, item, 1); // Use the final reference here
+            basketService.addBasketItem(basket, item, 1);
         });
-
-        // Since we've modified the basket, set it again in the session
-        session.setAttribute("basket", finalBasket);
 
         return "redirect:/items";
     }
 
 
     @GetMapping("/basket")
-    public String viewBasket(Model model, HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Basket basket = (Basket) session.getAttribute("basket");
+    public String viewBasket(Model model) {
 
-        if (basket == null) {
-            basket = new Basket();
-            session.setAttribute("basket", basket);
-        }
-
+        User currentUser = userRepository.findByUsername("user");
+        Basket basket = currentUser.getBasket();
         model.addAttribute("basket", basket);
         return "basket";
     }
@@ -126,7 +123,6 @@ public class ItemController {
     public String testMapping() {
         return "This is a test page";
     }
-
 }
 
 

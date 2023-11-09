@@ -4,6 +4,14 @@ import javax.persistence.*;
 
 @Entity
 public class User {
+    public User(String name, String password) {
+        this.username = name;
+        this.password = password;
+        this.basket = new Basket();
+    }
+
+    public User() {}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -14,7 +22,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "basket_id")
     private Basket basket;
 
