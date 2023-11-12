@@ -5,6 +5,7 @@ import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "app_users")
 public class User {
     public User(String name, String password) {
         this.username = name;
@@ -20,7 +21,6 @@ public class User {
 
     @Column(unique = true)
     private String username;
-
     @Column(nullable = false)
     private String password;
 

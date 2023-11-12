@@ -27,7 +27,9 @@
 <h3>Basket</h3>
 <td><a href="/basket">Click to see your basket</a></td>
 <h2>Items</h2>
-<a href="/items/add">Add New Item</a>
+
+<a href="/items/add" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">Add New Item</a>
+
 <table>
     <thead>
     <tr>
@@ -43,9 +45,9 @@
         <td th:text="${item.itemDesc}">Item Description</td>
         <td>
             <a th:href="@{/basket/add/{id}(id=${item.id})}">Add to Basket</a>
-            |
+            <a th:href="@{/items/edit/{id}(id=${item.id})}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">|</a>
             <a th:href="@{/items/edit/{id}(id=${item.id})}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">Update</a>
-            |
+            <a th:href="@{/items/edit/{id}(id=${item.id})}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">|</a>
             <form th:action="@{/items/delete/{id}(id=${item.id})}" method="post" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" style="display:inline;">
                 <input type="hidden" name="_method" value="delete" />
                 <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
