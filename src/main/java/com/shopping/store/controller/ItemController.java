@@ -92,12 +92,12 @@ public class ItemController {
     public String addItem(@ModelAttribute Item item) {
         itemRepository.save(item);
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) {
-            System.out.println(auth.getPrincipal() + "AUUUUUUUUUUT1");
-        } else {
-            System.out.println("AUUUUUUUUUUT2");
-        }
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        if (auth != null) {
+//            System.out.println(auth.getPrincipal() + "AUUUUUUUUUUT1");
+//        } else {
+//            System.out.println("AUUUUUUUUUUT2");
+//        }
 
         return "redirect:/items";
     }
@@ -155,13 +155,6 @@ public class ItemController {
         return "redirect:/basket";
     }
 
-
-
-
-    @GetMapping("/test")
-    public String testMapping() {
-        return "This is a test page";
-    }
 }
 
 
