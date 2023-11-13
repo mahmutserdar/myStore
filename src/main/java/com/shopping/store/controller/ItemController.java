@@ -143,6 +143,18 @@ public class ItemController {
     }
 
 
+    @PostMapping("/basket/delete/{id}")
+    public String deleteItemFromBasket(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        // First, delete references in the basket_item table
+        // This might involve calling a method in your service layer to handle this
+        basketService.deleteItemReferences(id);
+
+        // Then, delete the item itself
+        itemRepository.findById(id).ifPresent(itemRepository::delete);
+        redirectAttributes.addFlashAttribute("success", "Item deleted successfully!");
+        return "redirect:/basket";
+    }
+
 
 
 

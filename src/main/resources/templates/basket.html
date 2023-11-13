@@ -16,11 +16,19 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="item : ${basket.basketItems}">
+    <tr th:each="item : ${basket != null ? basket.basketItems : null}">
         <td th:text="${item.item.getItemName()}">Item Name</td>
         <td th:text="${item.item.getItemPrice()}">Item Price</td>
         <td th:text="${item.item.getItemDesc()}">Item Description</td>
+
+        <td>
+            <!-- Update the action URL here -->
+            <form th:action="@{/basket/delete/{id}(id=${item.item.id})}" method="post">
+                <input type="submit" value="Delete">
+            </form>
+        </td>
     </tr>
+
     </tbody>
 </table>
 </body>

@@ -13,14 +13,14 @@ public class Item {
     @Column(name = "ITEM_NAME")
     private String itemName;
     @Column(name = "ITEM_PRICE")
-    private Integer itemPrice;
+    private Double itemPrice;
     @Column(name = "ITEM_DESC")
     private String itemDesc;
 
     public Item() {
     }
 
-    public Item(String itemName, Integer itemPrice, String itemDesc) {
+    public Item(String itemName, Double itemPrice, String itemDesc) {
 
         this.itemName = itemName;
         this.itemPrice = itemPrice;
@@ -43,11 +43,11 @@ public class Item {
         this.itemName = itemName;
     }
 
-    public Integer getItemPrice() {
+    public Double getItemPrice() {
         return itemPrice;
     }
 
-    public void setItemPrice(Integer itemPrice) {
+    public void setItemPrice(Double itemPrice) {
         this.itemPrice = itemPrice;
     }
 

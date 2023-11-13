@@ -28,7 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/", "/home", "/items").permitAll()
                 .antMatchers("/items/add", "/items/edit/**", "/items/update/**", "/items/delete/**").hasRole("ADMIN")
-                .antMatchers("/h2-console/**", "/debugSession", "/items/search/**").permitAll()
+                .antMatchers("/h2-console/**", "/debugSession", "/items/search/**","/items/basket/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
